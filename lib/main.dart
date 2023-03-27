@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:preferencias_user/provider/theme_provider.dart';
 import 'package:preferencias_user/router/app_route.dart';
 import 'package:preferencias_user/share_preferences/preferences.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Preferences.init();
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => ThemeProvider(isDarkMode: Preferences.isDarkMode),
+      )
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -18,6 +27,7 @@ class MyApp extends StatelessWidget {
       title: 'Preferencias',
       initialRoute: AppRoute.homeRoute,
       routes: AppRoute.routes,
+      theme: Provider.of<ThemeProvider>(context).currentTheme,
     );
   }
 }
